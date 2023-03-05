@@ -6,6 +6,7 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as func
+import cfg
 
 
 def squash(caps, dim=-1, eps=1e-8):
@@ -291,19 +292,19 @@ class Decoder(nn.Module):
         self.img_channels = img_channels
         self.img_size = img_size
         self.caps_dimension = caps_dimension
-        self.neurons = self.img_size//4
+        self.neurons = self.img_size//8
         self.device = device
 
         self.fc = nn.Sequential(torch.nn.Linear(self.caps_dimension*self.num_caps, self.neurons*self.neurons*16), nn.ReLU(inplace=True)).to(self.device)
 
         self.reconst_layers1 = nn.Sequential(nn.BatchNorm2d(num_features=16, momentum=0.8),
-                                                nn.ConvTranspose2d(in_channels=16, out_channels=64,
-                                                kernel_size=3, stride=1, padding=1))
+                                             nn.ConvTranspose2d(in_channels=16, out_channels=64, kernel_size=3, stride=1, padding=1))
 
         self.reconst_layers2 = nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=3, stride=2, padding=1)
         self.reconst_layers3 = nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=3, stride=2, padding=1)
-        self.reconst_layers4 = nn.Sequential(nn.ConvTranspose2d(in_channels=16, out_channels=1, kernel_size=3, stride=1, padding=1),
-                                                nn.ReLU(inplace=True))
+        self.reconst_layers4 = nn.ConvTranspose2d(in_channels=16, out_channels=8, kernel_size=3, stride=2, padding=1)
+        self.reconst_layers5 = nn.Sequential(nn.ConvTranspose2d(in_channels=8, out_channels=self.img_channels, kernel_size=3, stride=1, padding=1),
+                                             nn.ReLU(inplace=True))
 
 
     def forward(self, x):
@@ -325,7 +326,10 @@ class Decoder(nn.Module):
         x = func.pad(x, p2d, "constant", 0)
         x = self.reconst_layers4(x)
 
-        x = x.view(-1, 1, self.img_size, self.img_size)
+        x = func.pad(x, p2d, "constant", 0)
+        x = self.reconst_layers5(x)
+
+        x = x.view(-1, self.img_channels, self.img_size, self.img_size)
 
         return x
 
@@ -346,7 +350,7 @@ class DeepCapsModel(nn.Module):
         self.height, self.width = img_height, img_width
 
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.bn1 = torch.nn.BatchNorm2d(num_features=128, eps=1e-08, momentum=0.99)
+        self.bn1 = torch.nn.BatchNorm2d(num_features=128, eps=0.0001, momentum=0.99)
 
         self.toCaps = ConvertToCaps()
 
@@ -391,14 +395,14 @@ class DeepCapsModel(nn.Module):
         self.conv3dcaps_31 = Conv3DCaps(height=height, width=width, conv_channel_in=32, caps_num_in=8, conv_channel_out=32, caps_num_out=8, device=device)
         self.conv2dcaps_32 = Conv2DCaps(height=height, width=width, conv_channel_in=32, caps_num_in=8, conv_channel_out=32,
                                         caps_num_out=8, stride=1, device=device)
-        self.conv2dcaps_33 = Conv2DCaps(height=height, width=width, conv_channel_in=32,  caps_num_in=8, conv_channel_out=32,
+        self.conv2dcaps_33 = Conv2DCaps(height=height, width=width, conv_channel_in=32, caps_num_in=8, conv_channel_out=32,
                                         caps_num_out=8, stride=1, device=device)
 
-        self.fc_caps = FC_Caps(output_capsules=self.num_class, input_capsules=640, in_dimensions=8,
-                                    out_dimensions=16, routing_iter=3, device=device)
+        self.fc_caps = FC_Caps(output_capsules=self.num_class, input_capsules=2560, in_dimensions=8,
+                                    out_dimensions=32, routing_iter=3, device=device)
 
         self.mask = Mask_CID(device=device)
-        self.decoder = Decoder(caps_dimension=16, num_caps=1, device=device, img_size=self.width, img_channels=1)
+        self.decoder = Decoder(caps_dimension=32, num_caps=1, device=device, img_size=self.width, img_channels=cfg.COLORS)
         self.mse_loss = nn.MSELoss(reduction='none')
 
 

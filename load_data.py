@@ -4,6 +4,7 @@ Dataset loading and data transformation classes.
 
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+import cfg
 
 
 
@@ -64,28 +65,39 @@ class Cifar10:
     def __call__(self):
 
         train_loader = DataLoader(datasets.CIFAR10(root=self.data_path,
-                                                        train=True,
-                                                        download=True,
-                                                        transform=transforms.Compose([transforms.RandomAffine(
-                                                                                                            degrees=self.rotation,
-                                                                                                            translate=self.translate,
-                                                                                                            scale=self.scale
-                                                        ), transforms.Grayscale(), transforms.Resize(self.img_size), transforms.ToTensor()])),
-                                                        batch_size=self.batch_size,
-                                                        shuffle=self.shuffle,
-                                                        num_workers=self.num_workers)
+            train=True,
+            download=True,
+            transform=transforms.Compose([
+                transforms.RandomAffine(
+                    degrees=self.rotation,
+                    translate=self.translate,
+                    scale=self.scale
+                ), 
+                transforms.Grayscale(), 
+                transforms.Resize(self.img_size), 
+                transforms.ToTensor()])),
+                
+            batch_size=self.batch_size,
+            shuffle=self.shuffle,
+            num_workers=self.num_workers)
 
         test_loader = DataLoader(datasets.CIFAR10(root=self.data_path,
-                                                        train=False,
-                                                        download=True,
-                                                        transform=transforms.Compose([
-                                                                                      transforms.Grayscale(),
-                                                                                      transforms.Resize(self.img_size),
-                                                                                      transforms.ToTensor()])),
-                                                        batch_size=self.batch_size,
-                                                        shuffle=self.shuffle,
-                                                        num_workers=self.num_workers)
+            train=False,
+            download=True,
+            transform=transforms.Compose([
+                transforms.Grayscale(),
+                transforms.Resize(self.img_size),
+                transforms.ToTensor()])),
+            batch_size=self.batch_size,
+            shuffle=self.shuffle,
+            num_workers=self.num_workers)
 
 
 
         return train_loader, test_loader, self.img_size, self.num_class
+
+    
+
+# train_loader, img_size, num_class = Cifar10(data_path=cfg.DATASET_FOLDER,
+#                                                       batch_size=cfg.BATCH_SIZE,
+#                                                       shuffle=True)()
