@@ -29,7 +29,9 @@ def train(img_size, device=torch.device('cpu'), learning_rate=1e-3, num_epochs=5
     '''
     checkpoint_path = checkpoint_folder + checkpoint_name
 
-    deepcaps = DeepCapsModel(num_class=num_classes, img_height=img_size, img_width=img_size, device=device).to(device) #initialize model
+    #* Initialize model
+    deepcaps = DeepCapsModel(num_class=num_classes, img_height=img_size, img_width=img_size, device=device).to(device)
+    print("# parameters:", sum(param.numel() for param in deepcaps.parameters()))
 
     #load the current checkpoint
     if load_checkpoint and not checkpoint_name is None and os.path.exists(checkpoint_path):

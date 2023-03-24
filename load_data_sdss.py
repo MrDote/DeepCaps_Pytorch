@@ -10,24 +10,6 @@ import cfg
 # import torch
 
 
-class ShiftAugmentation:
-    """Shifts image in a random direction by a random number of pixels
-    """
-    def __call__(self, sample):
-        max_shift = 5
-        
-        _, height, width = sample.shape
-        h_shift, w_shift = np.random.randint(-max_shift, max_shift + 1, size=2)
-        source_height_slice = slice(max(0, h_shift), h_shift + height)
-        source_width_slice = slice(max(0, w_shift), w_shift + width)
-        target_height_slice = slice(max(0, -h_shift), -h_shift + height)
-        target_width_slice = slice(max(0, -w_shift), -w_shift + width)
-        shifted_image = np.zeros_like(sample)
-        shifted_image[:, source_height_slice, source_width_slice] = sample[:, target_height_slice, target_width_slice]
-
-        return shifted_image
-
-
 class SDSSData(Dataset):
     def __init__(self, data_path, train, labels_file, transform=None):
         """
@@ -53,6 +35,18 @@ class SDSSData(Dataset):
         #* for npy file
         self.data = np.load(data_path)
 
+
+
+
+        self.data = self.data[:100]
+        self.labels = self.labels[:100]
+
+        # print(self.labels.shape)
+        # print(self.data.shape)
+
+
+
+
         data_train, data_test, labels_train, labels_test = train_test_split(self.data, self.labels, test_size=0.2, random_state=42)
 
         if train:
@@ -77,8 +71,8 @@ class SDSSData(Dataset):
     def __getitem__(self, index):
         # img = io.imread(self.data[index])
         # print(self.data[index].shape)
-        img = Image.fromarray(np.squeeze(self.data[index], axis=2))
-        # img = Image.fromarray(self.data[index], mode="RGB")
+        # img = Image.fromarray(np.squeeze(self.data[index], axis=2))
+        img = Image.fromarray(self.data[index], mode="RGB")
 
         labels = self.labels[index]
 
@@ -97,7 +91,7 @@ class SDSSData(Dataset):
 
 class SDSS:
 
-    def __init__(self, data_path, batch_size, shuffle, num_workers=4, rotation_degrees=15, translate=(0, 0.1), scale=(0.95, 1.1)):
+    def __init__(self, data_path, batch_size, shuffle, num_workers=4, rotation_degrees=45, translate=(0.1, 0.1), scale=(0.95, 1.1)):
 
         self.data_path = data_path
         self.batch_size = batch_size
@@ -120,11 +114,11 @@ class SDSS:
             labels_file=self.labels,
             
             transform=transforms.Compose([
-                # transforms.RandomAffine(
-                #     degrees=self.rotation, 
-                #     translate=self.translate,
-                #     scale=self.scale
-                # ),
+                transforms.RandomAffine(
+                    degrees=self.rotation, 
+                    translate=self.translate,
+                    scale=self.scale
+                ),
                 transforms.ToTensor(),
                 transforms.Resize(self.img_size)
             ]),
@@ -153,7 +147,12 @@ class SDSS:
 
         return train_loader, test_loader, self.img_size, self.num_class
 
-# train_loader, test_loader, img_size, num_class = SDSS(data_path=cfg.DATASET_FOLDER, batch_size=cfg.BATCH_SIZE, shuffle=True)()
+# train_loader, test_loader, img_size, num_class = SDSS(data_path=cfg.DATASET_FOLDER, batch_size=cfg.BATCH_SIZE, shuffle=False)()
+
+# if __name__ == '__main__':
+#     for batch_idx, (train_data, labels) in enumerate(train_loader): #from training dataset
+#         data, labels = train_data[0], labels
+#         print(data)
 
 
 ########  VIEW ORIGINAL VS TRANSFORMED  #############
@@ -175,8 +174,8 @@ class SDSS:
 
 
 # import matplotlib.pyplot as plt
-# samples = 4
-# starting_index = 40
+# samples = 6
+# starting_index = 35
 
 # fig, axs = plt.subplots(2, samples, figsize=(10,7))
 # fig.subplots_adjust(wspace=0.1, hspace=0.0)
@@ -188,8 +187,8 @@ class SDSS:
 #     print(train_loader.dataset[i][1])
 #     original = train_loader.dataset[i][0]
 #     transformed = transforms.RandomAffine(
-#         degrees=15, 
-#         translate=(0,0.1),
+#         degrees=15,
+#         translate=(0.15,0.15),
 #         scale=(0.95, 1.1)
 #     )(original)
     
