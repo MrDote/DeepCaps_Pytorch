@@ -1,5 +1,6 @@
 import cfg
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 LABEL = 'acc'  #* loss || acc || r2
@@ -7,27 +8,25 @@ LABEL = 'acc'  #* loss || acc || r2
 Epoch = list(range(1, cfg.NUM_EPOCHS + 1))
 print(Epoch)
 
-plt.xlabel("Epoch")
+matplotlib.rcParams.update({'font.size':16})
+plt.xlabel("Epoch", fontsize=20)
 
 
 if LABEL == 'loss':
+
+    plt.ylabel("RMSE Loss", fontsize=15)
+
+    ax = plt.gca()
+    ax.set_ylim([1, 3])
+    # start, end = ax.get_ylim()
+    ax.yaxis.set_ticks(np.arange(1.0, 3.2, 0.5))
+
     Train_Loss = np.load(cfg.ACC_FOLDER + '/training_loss.npy', allow_pickle=True)
     Test_Loss = np.load(cfg.ACC_FOLDER + '/testing_loss.npy', allow_pickle=True)
-    plt.ylabel("Loss")
-    plt.plot(Epoch, Train_Loss, color='red', linestyle='-', label='Loss during Training phase')
-    plt.plot(Epoch, Test_Loss, color='blue', linestyle='-', label='Loss during Testing phase')
+    plt.plot(Epoch, Train_Loss, color='grey', linestyle='-', label='Greyscale RMSE during Training phase')
+    plt.plot(Epoch, Test_Loss, color='black', linestyle='-', label='Greyscale RMSE during Testing phase')
     print("Min Train Loss: ", Train_Loss.min())
     print("Min Test Loss: ", Test_Loss.min())
-
-
-if LABEL == 'acc':
-    Train_Acc = np.load(cfg.ACC_FOLDER + '/training_acc.npy', allow_pickle=True)
-    Test_Acc = np.load(cfg.ACC_FOLDER + '/testing_acc.npy', allow_pickle=True)
-    plt.ylabel("Accuracy")
-    plt.plot(Epoch, Train_Acc, color='red', linestyle='-', label='Accuracy during Training phase')
-    plt.plot(Epoch, Test_Acc, color='blue', linestyle='-', label='Accuracy during Testing phase')
-    print("Max Train Accuracy: ", Train_Acc.max())
-    print("Max Test Accuracy: ", Test_Acc.max())
 
 
 if LABEL == 'r2':
@@ -40,5 +39,21 @@ if LABEL == 'r2':
     print("Max Test R2: ", Test_R2.max())
 
 
-plt.legend()
+if LABEL == 'acc':
+    plt.ylabel("Accuracy", fontsize=20)
+    
+    ax = plt.gca()
+    ax.set_ylim([91.0, 100.5])
+    # start, end = ax.get_ylim()
+    # ax.yaxis.set_ticks(np.arange(65, 101, 5))
+
+    Train_Acc = np.load(cfg.ACC_FOLDER + '/training_acc.npy', allow_pickle=True)
+    Test_Acc = np.load(cfg.ACC_FOLDER + '/testing_acc.npy', allow_pickle=True)
+    plt.plot(Epoch, Train_Acc, color='grey', linestyle='-', label='Greyscale Accuracy during Training phase', zorder=1)
+    plt.plot(Epoch, Test_Acc, color='black', linestyle='-', label='Greyscale Accuracy during Testing phase')
+    print("Max Train Accuracy: ", Train_Acc.max())
+    print("Max Test Accuracy: ", Test_Acc.max())
+
+
+plt.legend(fontsize=14, loc="lower right")
 plt.show()

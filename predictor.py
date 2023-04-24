@@ -11,7 +11,7 @@ BATCH_SIZE = 2
 if __name__ == "__main__":
 
     deepcaps = DeepCapsModel(num_class=2, img_height=64, img_width=64, device="cuda:0").to("cuda:0")
-    deepcaps.load_state_dict(torch.load(cfg.CHECKPOINT_FOLDER + '/epoch_200.pth'))
+    deepcaps.load_state_dict(torch.load(cfg.CHECKPOINT_FOLDER + '/simard_epoch_200.pth'))
 
     X = np.load(f'../CapsNet_Anton/ColorMass/images/images_cm_grey_64.npy')
     data = torch.from_numpy(X).float()
@@ -25,7 +25,7 @@ if __name__ == "__main__":
         datasample = data[i:I*BATCH_SIZE]
         datasamplecuda = datasample.cuda()
         _, _, _, prediction = deepcaps(datasamplecuda)
-        Prednpy = np.array(prediction.to('cpu'))
+        Prednpy = np.array(prediction.to('cpu').detach())
         print(I*BATCH_SIZE - 2)
 
         for i in range(BATCH_SIZE):
@@ -36,4 +36,4 @@ if __name__ == "__main__":
         
         I+=1
     
-    np.save(f'../CapsNet_Anton/ColorMass/preds/preds_kaggle_deepcaps', CapsPred)
+    np.save(f'../CapsNet_Anton/ColorMass/preds/preds_simard_deepcaps', CapsPred)

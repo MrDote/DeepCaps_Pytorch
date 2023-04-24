@@ -35,9 +35,6 @@ class SDSSData(Dataset):
         #* for npy file
         self.data = np.load(data_path)
 
-
-
-
         self.data = self.data[:100]
         self.labels = self.labels[:100]
 
@@ -71,8 +68,12 @@ class SDSSData(Dataset):
     def __getitem__(self, index):
         # img = io.imread(self.data[index])
         # print(self.data[index].shape)
-        # img = Image.fromarray(np.squeeze(self.data[index], axis=2))
-        img = Image.fromarray(self.data[index], mode="RGB")
+        # print(np.squeeze(self.data[index], axis=2).shape)
+
+        if cfg.COLORS == 1:
+            img = Image.fromarray(np.squeeze(self.data[index], axis=2))
+        else: 
+            img = Image.fromarray(self.data[index], mode="RGB")
 
         labels = self.labels[index]
 
@@ -114,13 +115,13 @@ class SDSS:
             labels_file=self.labels,
             
             transform=transforms.Compose([
+                transforms.Resize(self.img_size),
                 transforms.RandomAffine(
                     degrees=self.rotation, 
                     translate=self.translate,
                     scale=self.scale
                 ),
                 transforms.ToTensor(),
-                transforms.Resize(self.img_size)
             ]),
             ),
             drop_last=True,
@@ -147,12 +148,14 @@ class SDSS:
 
         return train_loader, test_loader, self.img_size, self.num_class
 
+
+
 # train_loader, test_loader, img_size, num_class = SDSS(data_path=cfg.DATASET_FOLDER, batch_size=cfg.BATCH_SIZE, shuffle=False)()
 
 # if __name__ == '__main__':
 #     for batch_idx, (train_data, labels) in enumerate(train_loader): #from training dataset
 #         data, labels = train_data[0], labels
-#         print(data)
+#         print(data.shape)
 
 
 ########  VIEW ORIGINAL VS TRANSFORMED  #############

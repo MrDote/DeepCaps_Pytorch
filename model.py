@@ -274,6 +274,9 @@ class Mask_CID(nn.Module):
             masked[i] = x[m[i][0], m[i][1], :].unsqueeze(0)
 
         if target is None:
+            #* predicting
+            # return masked.squeeze(-1), classes
+            #* training
             return masked.squeeze(-1), max_len_indices
         return masked.squeeze(-1), classes.max(dim=1)[1].squeeze()
 
@@ -349,7 +352,7 @@ class DeepCapsModel(nn.Module):
         self.num_class = num_class
         self.height, self.width = img_height, img_width
 
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=128, kernel_size=3, stride=1, padding=1)
+        self.conv1 = nn.Conv2d(in_channels=cfg.COLORS, out_channels=128, kernel_size=3, stride=1, padding=1)
         self.bn1 = torch.nn.BatchNorm2d(num_features=128, eps=0.0001, momentum=0.99)
 
         self.toCaps = ConvertToCaps()
