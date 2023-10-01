@@ -1,5 +1,4 @@
-﻿
-# DeepCaps : Going Deeper with Capsule Networks with PyTorch
+﻿# DeepCaps : Going Deeper with Capsule Networks with PyTorch
 
 This implementation is done by referring to the official implementation of DeepCaps by [1], a PyTorch implementation [2] and the official paper at https://arxiv.org/abs/1904.09546. 
 
@@ -10,7 +9,9 @@ python train.py
 ```
 
 ## DeepCaps on Galaxy Zoo Images
-As part of my Masters project, the DeepCaps network was trained on part of the SDSS DR7 dataset with corresponding labels taken from the Galaxy Zoo 2 project [3] and the Simard et al. structural parameter catalogue [4]. The network was trained on greyscale images for 200 epochs. The accuracy achieved at every epoch is plotted below:
+As part of my Masters project, the DeepCaps network was trained on part of the SDSS DR7 dataset with corresponding labels taken from the Galaxy Zoo 2 project [3] and the Simard et al. structural parameter catalogue [4]. The network was trained on greyscale images for 200 epochs. 
+
+<!-- The accuracy achieved at every epoch is plotted below: -->
 
 
 <!-- <img src="readme_images/loss_graph.png" width="800" />  <img src="readme_images/accuracy_graph.png" width="800"/>  -->
