@@ -9,32 +9,15 @@ To train on your own custom dataset, simply change the required parameters in `c
 python train.py
 ```
 
-## DeepCaps on FashionMNIST
-This implementation was tested on FashionMNIST dataset and it managed to achieve an accuracy of 88% on the testing set. In the official paper however, the model has achieved an accuracy of 94% on this dataset. Below are the results from the training.
+## DeepCaps on Galaxy Zoo Images
+As part of my Masters project, the DeepCaps network was trained on part of the SDSS DR7 dataset with corresponding labels taken from the Galaxy Zoo 2 project [3] and the Simard et al. structural parameter catalogue [4]. The network was trained on greyscale images for 200 epochs. The accuracy achieved at every epoch is plotted below:
 
-#### Loss and Accuracy over 1000 epochs
-<img src="readme_images/loss_graph.png" width="800" />  <img src="readme_images/accuracy_graph.png" width="800"/>  
 
-#### Reconstruction Network's Result
-Below are the results from the reconstruction network of this model at the end of epoch 0, 500 and 995. The top row are the input images to the model along with their corresponding classes and the bottom row are the images reconstructed back from the final capsules along with the network's class prediction on the given image.
+<!-- <img src="readme_images/loss_graph.png" width="800" />  <img src="readme_images/accuracy_graph.png" width="800"/>  -->
 
-<figure class="image">
-  <img src="readme_images/Original_vs_Reconstructed_Epoch_0.png" >
-  <div align="center"><figcaption>Epoch 0</figcaption></div>
-</figure>
 
-<figure class="image">
-  <img src="readme_images/Original_vs_Reconstructed_Epoch_500.png">
-  <div align="center"><figcaption>Epoch 500</figcaption></div>
-</figure>
-
-<figure class="image">
-  <img src="readme_images/Original_vs_Reconstructed_Epoch_995.png">
-  <div align="center"><figcaption>Epoch 995</figcaption></div>
-</figure>
-
-## Conclusion 
-It is evident that the model's loss was steadily decreasing while the accuracy improved over the epochs. The output of the reconstruction network was also improving over the epochs. Perhaps with more adjustments on the learning rate and longer training time, this implementation can achieve a higher accuracy.
+<!-- ## Conclusion 
+It is evident that the model's accuracy is . The output of the reconstruction network was also improving over the epochs. Perhaps with more adjustments on the learning rate and longer training time, this implementation can achieve a higher accuracy. -->
 
 
 
@@ -43,3 +26,7 @@ It is evident that the model's loss was steadily decreasing while the accuracy i
 [1] https://github.com/brjathu/deepcaps
 
 [2] https://github.com/HopefulRational/DeepCaps-PyTorch
+
+[3] https://data.galaxyzoo.org
+
+[4] https://ui.adsabs.harvard.edu/abs/2011ApJS..196...11S/abstract
