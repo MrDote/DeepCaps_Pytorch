@@ -1,25 +1,15 @@
-﻿# DeepCaps : Going Deeper with Capsule Networks with PyTorch
+﻿# DeepCaps for Galaxy Morphology Classification
 
 This implementation is done by referring to the official implementation of DeepCaps by [1], a PyTorch implementation [2] and the official paper at https://arxiv.org/abs/1904.09546. 
 
-## How to Use with your own Custom Dataset
+## How to Use with Your Own Custom Dataset
 To train on your own custom dataset, simply change the required parameters in `cfg.py` and write your own class to load the dataset in `load_data.py`. Finally, replace line 19 in `train.py` appropriately to point to your custom class. No further changes should be required to train the model. The training can be executed with 
 ```
 python train.py
 ```
 
 ## DeepCaps on Galaxy Zoo Images
-As part of my Masters project, the DeepCaps network was trained on part of the SDSS DR7 dataset with corresponding labels taken from the Galaxy Zoo 2 project [3] and the Simard et al. structural parameter catalogue [4]. The network was trained on greyscale images for 200 epochs. 
-
-<!-- The accuracy achieved at every epoch is plotted below: -->
-
-
-<!-- <img src="readme_images/loss_graph.png" width="800" />  <img src="readme_images/accuracy_graph.png" width="800"/>  -->
-
-
-<!-- ## Conclusion 
-It is evident that the model's accuracy is . The output of the reconstruction network was also improving over the epochs. Perhaps with more adjustments on the learning rate and longer training time, this implementation can achieve a higher accuracy. -->
-
+As part of my Masters project, the DeepCaps network was trained on part of the SDSS DR7 dataset with corresponding labels taken from the Galaxy Zoo 2 project [3] and the Simard et al. structural parameter catalogue [4]. The network was trained on greyscale images for 200 epochs.
 
 
 ## References
